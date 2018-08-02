@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="col-md-6 offset-md-3">
+        {% for bulletin in bulletins.all %}
+            <div class="row mt-3 mb-3">
+                {% if bulletin.text %}
+                    <div class="card col text-center" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ bulletin.title }}</h5>
+                            <p class="card-text">{{ bulletin.text }}</p>
+                            <a href="javascript:{document.getElementById('up{{ bulletin.id }}').submit()}" class="card-link mt-1 mb-1">
+                                <span class="oi oi-heart"></span> {{ bulletin.votes_total }}
+                            </a>
+                            <p class="text-muted mt-1">
+                                <span class="oi oi-align-center"></span> ~ {{ bulletin.pub_date_pretty }} ~ {{ bulletin.publisher.username }}
+                            </p>
+                        </div>
+                    </div>
+                {% elif bulletin.image %}
+                    <div class="card col text-center" style="width: 18rem;">
+                        <img class="card-img-top" src="{{ bulletin.image.url }}" alt="Card image cap">
+                        <div class="card-body">
+                            <p class="card-text">{{ bulletin.title }}</p>
+                            <a href="javascript:{document.getElementById('up{{ bulletin.id }}').submit()}" class="card-link mt-1 mb-1">
+                                <span class="oi oi-heart"></span> {{ bulletin.votes_total }}
+                            </a>
+                            <p class="text-muted mt-1">
+                                <span class="oi oi-image"></span> ~ {{ bulletin.pub_date_pretty }} ~ {{ bulletin.publisher.username }}
+                            </p>
+                        </div>
+                    </div>
+                {% elif bulletin.url %}
+                    <div class="card text-center col">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ bulletin.title }}</h5>
+                            <a href="{{ bulletin.url }}" class="btn btn-outline-primary mb-1">Go</a> <br/>
+                            <a href="javascript:{document.getElementById('up{{ bulletin.id }}').submit()}" class="card-link mt-1 mb-1">
+                                <span class="oi oi-heart"></span> {{ bulletin.votes_total }}
+                            </a>
+                            <p class="text-muted mt-1">
+                               <span class="oi oi-external-link"></span> ~ {{ bulletin.pub_date_pretty }} ~ {{ bulletin.publisher.username }}
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <form id="up{{ bulletin.id }}" method="POST" action="{% url 'up' bulletin.id %}">
+            {% csrf_token %}
+            <input type="hidden"/>
+            </form>
+        {% endfor %}
+    </div>
+{% endblock %}
